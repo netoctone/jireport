@@ -1,0 +1,56 @@
+#! /home/ezh/.rvm/rubies/ruby-1.9.2-p180/bin/ruby
+$:.unshift File.expand_path('../../lib', __FILE__)
+
+require 'jireport'
+require 'yaml'
+require 'logger'
+require 'ostruct'
+
+include JiReport
+
+def report name
+  log = Logger.new(
+    File.open(File.expand_path('../../log/report.log', __FILE__), 'a')
+  )
+  log.info "--- started ---"
+
+  log.info "reading config/database.yml"
+  db_conf_path = File.expand_path('../../config/database.yml', __FILE__)
+  db_conf = YAML::load(File.open(db_conf_path))
+
+  log.info "establishing connection with db"
+  ActiveRecord::Base.establish_connection db_conf
+
+  log.info "reading config/fetch.yml"
+  conf_path = File.expand_path('../../config/fetch.yml', __FILE__)
+  conf = YAML::load(File.open(conf_path))
+
+  log.info "reading config/google_auth.yml"
+  google_path = File.expand_path('../../config/google_auth.yml', __FILE__)
+  google_conf = YAML::load(File.open(google_path))
+
+  log.info "establishing connecton with google"
+  report = GoogleSpreadsheets.new google_conf
+
+  log.info "gathering report data"
+  tracks = {}
+  conf['users'].each do |user, fullname|
+    issues = Issue.where(:assignee => user)
+    tracks[OpenStruct.new({ :fullname => fullname })] = issues
+  end
+
+  log.info "sending report to google"
+  report.save_report name, tracks
+
+  log.info "--- finished successfully ---"
+end
+
+
+USAGE = 'USAGE: report report_name'
+
+if ARGV.size != 1
+  puts USAGE
+  exit 1
+end
+
+report ARGV[0]

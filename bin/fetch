@@ -1,0 +1,61 @@
+#! /home/ezh/.rvm/rubies/ruby-1.9.2-p180/bin/ruby
+$:.unshift File.expand_path('../../lib', __FILE__)
+
+require 'jireport'
+require 'yaml'
+require 'logger'
+
+include JiReport
+
+def fetch
+  log = Logger.new(
+    File.open(File.expand_path('../../log/fetch.log', __FILE__), 'a')
+  )
+  log.info "--- started ---"
+
+  log.info "reading config/database.yml"
+  db_conf_path = File.expand_path('../../config/database.yml', __FILE__)
+  db_conf = YAML::load(File.open(db_conf_path))
+
+  log.info "establishing connection with db"
+  ActiveRecord::Base.establish_connection db_conf
+
+  log.info "reading config/fetch.yml"
+  conf_path = File.expand_path('../../config/fetch.yml', __FILE__)
+  conf = YAML::load(File.open(conf_path))
+
+  log.info "reading config/last_fetch"
+  last_fetch_path = File.expand_path('../../config/last_fetch', __FILE__)
+  last_fetch = Time.parse(File.readlines(last_fetch_path)[0].chomp)
+  if conf[:timezone]
+    last_fetch = last_fetch.in_time_zone(conf[:timezone])
+  else
+    last_fetch = last_fetch.utc
+  end
+
+  log.info "establishing connecton with jira"
+  fetch = JiraFetch.new :login => conf['login'],
+                        :password => conf['password'],
+                        :url => conf['url'],
+                        :proxy => conf['proxy'],
+                        :logger => log
+  new_last_fetch = Time.now
+  conf['users'].each_key do |user|
+    log.info "fetching issues for #{user}"
+    issues = fetch.fetch_issues :updated_after => last_fetch,
+                                :assignee => user
+    log.info "tracking issues for #{user}"
+    issues.each do |issue|
+      Issue.track issue
+    end
+  end
+
+  log.info "rewriting confign/last_fetch"
+  File.open(last_fetch_path, 'w') do |file|
+    file << new_last_fetch
+  end
+
+  log.info "--- finished successfully ---"
+end
+
+fetch

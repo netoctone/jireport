@@ -1,0 +1,9 @@
+login:
+password:
+url:
+proxy:
+timezone: -8
+
+users:
+  jira_login: 'User Name'
+  jira_login_2: 'User 2 Name'
