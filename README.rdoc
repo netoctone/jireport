@@ -1,0 +1,42 @@
+== Welcome to JiReport
+
+jireport is console app in ruby 1.9
+
+It is designed to create custom reports of issue resolve activity in JIRA.
+
+Two scripts available:
+
+1. bin/fetch
+
+Fetches issues state and tracks it to database,
+allowing to add additional data based on comparison with already
+stored one. Database is accessed via ActiveRecord (from Rails 3.0).
+
+2. bin/report
+
+Generates report based on stored data,
+for now, using Google Spreadsheet API.
+
+== Getting Started
+
+1. Clone this repo to your machine:
+
+    git clone git://github.com/netoctone/jireport.git; cd jireport
+
+2. Install bundler if you haven't yet:
+
+    gem install bundler
+
+3. Install required gems:
+
+    bundle install
+
+4. Configure all files in +config/+ directory, create database according to it.
+
+5. Run database migrations:
+
+    rake migrate
+
+6. ???
+
+7. PROFIT
