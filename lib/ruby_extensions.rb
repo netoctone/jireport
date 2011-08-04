@@ -17,3 +17,11 @@ module Enumerable
     hash
   end
 end
+
+class Exception
+  def to_log
+    "\n\n#{self.class} (#{self.message}):\n    " +
+    self.backtrace.join("\n    ") +
+    "\n\n"
+  end
+end

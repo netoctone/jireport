@@ -56,6 +56,10 @@ def fetch
   end
 
   log.info "--- finished successfully ---"
+rescue StandardError => e
+  msg = e.to_log
+  STDERR.print msg
+  log.error msg
 end
 
 fetch

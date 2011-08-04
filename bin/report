@@ -43,6 +43,10 @@ def report name
   report.save_report name, tracks
 
   log.info "--- finished successfully ---"
+rescue StandardError => e
+  msg = e.to_log
+  STDERR.print msg
+  log.error msg
 end
 
 
