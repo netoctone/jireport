@@ -37,6 +37,8 @@ for now, using Google Spreadsheet API.
 
     rake migrate
 
-6. ???
+6. Correct sha-bang in +bin/fetch+ and +bin/report+.
 
-7. PROFIT
+7. ???
+
+8. PROFIT
