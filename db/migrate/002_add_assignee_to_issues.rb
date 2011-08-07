@@ -6,6 +6,6 @@ class AddAssigneeToIssues < ActiveRecord::Migration
 
   def self.down
     remove_index :issues, :assignee
-    remove_column :issues
+    remove_column :issues, :assignee
   end
 end
