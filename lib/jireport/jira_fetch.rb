@@ -28,7 +28,7 @@ module JiReport
         end
         @api.login(@username, @password)
       rescue SOAP::FaultError => e
-        raise NotAuthenticatedError, 'Invalid username or password'
+        raise NotAuthenticatedError, 'Authentication error'
       rescue ::SocketError, HTTPClient::BadResponseError,
              OpenSSL::SSL::SSLError, Errno::ECONNREFUSED,
              SOAP::HTTPStreamError => e

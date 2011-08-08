@@ -6,7 +6,7 @@ require 'jireport/issue'
 
 module JiReport
   autoload :JiraFetch, 'jireport/jira_fetch'
-  autoload :GoogleSpreadsheets, 'jireport/google_spreadsheets'
+  autoload :ExcelFormatter, 'jireport/excel_formatter'
 
   class Error < StandardError; end
   class NotAvailableError < Error; end

@@ -1,12 +1,95 @@
-#! /home/ezh/.rvm/rubies/ruby-1.9.2-p180/bin/ruby
+#!/usr/bin/env ruby
 $:.unshift File.expand_path('../../lib', __FILE__)
 
+require 'rubygems'
 require 'jireport'
 require 'yaml'
 require 'logger'
 require 'ostruct'
 
 include JiReport
+
+REPORT_METADATA = begin
+  short_report_columns = [
+    {
+      :source => [:user, :fullname],
+      :header => 'Name'
+    },
+    {
+      :header => 'Project'
+    },
+    {
+      :source => [:issue, :key],
+      :header => 'Task ID'
+    },
+    {
+      :source => [:issue, :percent],
+      :header => '%'
+    }
+  ]
+
+  detailed = Array.new short_report_columns
+  detailed[-1...-1] = [
+    {
+      :source => [:issue, :summary],
+      :header => 'Task Desc'
+    },
+    {
+      :source => [:issue, :start_date],
+      :header => 'Start date'
+    },
+    {
+      :source => [:issue, :end_date],
+      :header => 'End date'
+    },
+    {
+      :source => [:issue, :description],
+      :header => 'Detailed task description ' +
+                 '(what has been done, concerns, issues)',
+    }
+  ]
+  detailed.push({
+    :header => 'Comments'
+  })
+
+  [
+    {
+      :title => 'Management',
+      :no_issue => true,
+      :columns => [
+        {
+          :source => [:user, :fullname],
+          :header => 'Name'
+        },
+        {
+          :header => 'Vac/Ill'
+        },
+        {
+          :header => 'On Track'
+        },
+        {
+          :header => 'Delay Details'
+        },
+        {
+          :header => 'Recovery Plan'
+        },
+        {
+          :header => 'Comments'
+        }
+      ]
+    },
+    {
+      :title => 'Short report',
+      :columns => short_report_columns
+    },
+    {
+      :title => 'Detailed report',
+      :columns => detailed
+    }
+  ]
+end
+
+TMP_PATH = File.expand_path('../../tmp', __FILE__)
 
 def report name
   log = Logger.new(
@@ -29,18 +112,21 @@ def report name
   google_path = File.expand_path('../../config/google_auth.yml', __FILE__)
   google_conf = YAML::load(File.open(google_path))
 
-  log.info "establishing connecton with google"
-  report = GoogleSpreadsheets.new google_conf
-
   log.info "gathering report data"
-  tracks = {}
+  data = []
   conf['users'].each do |user, fullname|
     issues = Issue.where(:assignee => user)
-    tracks[OpenStruct.new({ :fullname => fullname })] = issues
+    data << [OpenStruct.new({ :fullname => fullname }), issues]
   end
 
+  log.info "generating xls data"
+  tmp_file = "#{TMP_PATH}/#{name}.xls"
+  ExcelFormatter.generate tmp_file, REPORT_METADATA, data
+
   log.info "sending report to google"
-  report.save_report name, tracks
+  g_cnf = google_conf
+  %x[bin/xls_to_google '#{g_cnf[:login]}' '#{g_cnf[:password]}' '#{name}']
+  raise StandardError, "bin/xls_to_google returned #{$?}" unless $? == 0
 
   log.info "--- finished successfully ---"
 rescue StandardError => e
