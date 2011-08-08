@@ -125,7 +125,7 @@ def report name
 
   log.info "sending report to google"
   g_cnf = google_conf
-  %x[bin/xls_to_google '#{g_cnf[:login]}' '#{g_cnf[:password]}' '#{name}']
+  %x[bin/xls_to_google '#{g_cnf['login']}' '#{g_cnf['password']}' '#{name}']
   raise StandardError, "bin/xls_to_google returned #{$?}" unless $? == 0
 
   log.info "--- finished successfully ---"
