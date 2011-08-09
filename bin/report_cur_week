@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'active_support/time'
+
+now = Time.now
+from = now - now.wday.days
+to = from + 6.days
+
+title = "Weekly #{now.strftime '%b %d'} Status"
+
+print %x[bin/report '#{title}' '#{from.strftime '%D'}' '#{to.strftime '%D'}']
