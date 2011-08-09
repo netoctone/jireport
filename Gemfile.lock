@@ -33,6 +33,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord (>= 3.0.7)
+  activerecord (~> 3.0.7)
+  activesupport (~> 3.0.7)
   jira4r!
   spreadsheet (~> 0.6.5.7)

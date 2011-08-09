@@ -7,6 +7,8 @@ require 'yaml'
 require 'logger'
 require 'ostruct'
 
+require 'active_support/time'
+
 include JiReport
 
 REPORT_METADATA = begin
@@ -91,7 +93,7 @@ end
 
 TMP_PATH = File.expand_path('../../tmp', __FILE__)
 
-def report name
+def report name, from_date, to_date
   log = Logger.new(
     File.open(File.expand_path('../../log/report.log', __FILE__), 'a')
   )
@@ -115,7 +117,8 @@ def report name
   log.info "gathering report data"
   data = []
   conf['users'].each do |user, fullname|
-    issues = Issue.where(:assignee => user)
+    issues = Issue.where(:assignee => user,
+                         :updated_at => from_date..to_date)
     data << [OpenStruct.new({ :fullname => fullname }), issues]
   end
 
@@ -136,11 +139,11 @@ rescue StandardError => e
 end
 
 
-USAGE = 'USAGE: report report_name'
+USAGE = 'USAGE: report report_name from_date to_date'
 
-if ARGV.size != 1
+if ARGV.size != 3
   puts USAGE
   exit 1
 end
 
-report ARGV[0]
+report ARGV[0], Time.parse(ARGV[1], '%D'), Time.parse(ARGV[2], '%D') + 1.day
