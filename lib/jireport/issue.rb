@@ -2,7 +2,11 @@ class Issue < ActiveRecord::Base
   START_STATUSES = ['Assigned', 'Working on it', 'Resolved']
   END_STATUSES = ['Resolved']
 
+  TRACK_STATUSES = ['New'] + START_STATUSES + END_STATUSES
+
   def self.track issue_data
+    return unless TRACK_STATUSES.include?(issue_data[:status])
+
     issue = self.find_or_initialize_by_key(issue_data[:key])
 
     if !issue.started_at && START_STATUSES.member?(issue_data[:status])
