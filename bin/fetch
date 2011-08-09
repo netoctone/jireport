@@ -1,6 +1,7 @@
-#! /home/ezh/.rvm/rubies/ruby-1.9.2-p180/bin/ruby
+#!/usr/bin/env ruby
 $:.unshift File.expand_path('../../lib', __FILE__)
 
+require 'rubygems'
 require 'jireport'
 require 'yaml'
 require 'logger'
