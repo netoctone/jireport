@@ -8,12 +8,11 @@ module JiReport
     ISSUE_HEIGHT = 30
     DEFAULT_WIDTH = 10
 
-    COL_DEFAULT_FORMAT = Spreadsheet::Format.new :vertical_align => :justify
+    COL_DEFAULT_FORMAT = Spreadsheet::Format.new :align => :justify
 
     HEADER_FORMAT = Spreadsheet::Format.new :bold => true,
                                             :color => :green,
-                                            :horizontal_align => :center,
-                                            :vertical_align => :justify
+                                            :align => :justify
 
     USER_FORMAT = Spreadsheet::Format.new :bold => true,
                                           :color => :red

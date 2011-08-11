@@ -66,7 +66,8 @@ REPORT_METADATA = begin
       :columns => [
         {
           :source => [:user, :fullname],
-          :header => 'Name'
+          :header => 'Name',
+          :width => 20
         },
         {
           :header => 'Vac/Ill'
@@ -81,7 +82,8 @@ REPORT_METADATA = begin
           :header => 'Recovery Plan'
         },
         {
-          :header => 'Comments'
+          :header => 'Comments',
+          :width => 12
         }
       ]
     },
