@@ -15,14 +15,16 @@ REPORT_METADATA = begin
   short_report_columns = [
     {
       :source => [:user, :fullname],
-      :header => 'Name'
+      :header => 'Name',
+      :width => 20
     },
     {
       :header => 'Project'
     },
     {
       :source => [:issue, :key],
-      :header => 'Task ID'
+      :header => 'Task ID',
+      :width => 17
     },
     {
       :source => [:issue, :percent],
@@ -34,7 +36,8 @@ REPORT_METADATA = begin
   detailed[-1...-1] = [
     {
       :source => [:issue, :summary],
-      :header => 'Task Desc'
+      :header => 'Task Desc',
+      :width => 60
     },
     {
       :source => [:issue, :start_date],
@@ -48,10 +51,12 @@ REPORT_METADATA = begin
       :source => [:issue, :description],
       :header => 'Detailed task description ' +
                  '(what has been done, concerns, issues)',
+      :width => 45
     }
   ]
   detailed.push({
-    :header => 'Comments'
+    :header => 'Comments',
+    :width => 45
   })
 
   [
