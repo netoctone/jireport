@@ -4,24 +4,20 @@ class Issue < ActiveRecord::Base
 
   TRACK_STATUSES = ['New'] + START_STATUSES + END_STATUSES
 
-  INIT_TRACK_ST = ['New', 'Assigned', 'Working on it']
-
   def self.track issue_data
     return unless TRACK_STATUSES.include?(issue_data[:status])
 
-    issue = self.find_by_key(issue_data[:key])
+    issue = self.find_or_initialize_by_key(issue_data[:key])
 
-    return unless INIT_TRACK_ST.include?(issue_data[:status]) unless issue
+    return if !issue.new_record? && issue.updated_at > issue_data[:updated_at]
 
     if !issue.started_at && START_STATUSES.member?(issue_data[:status])
-      issue_data[:started_at] = Time.now
+      issue_data[:started_at] = issue_data[:updated_at]
     end
 
     if !issue.ended_at && END_STATUSES.member?(issue_data[:status])
-      issue_data[:ended_at] = Time.now
+      issue_data[:ended_at] = issue_data[:updated_at]
     end
-
-    issue ||= self.new
 
     issue.update_attributes(issue_data)
   end
@@ -44,8 +40,7 @@ class Issue < ActiveRecord::Base
   end
 
   STATUS_TO_DESCRIPTION = {
-    'Resolved' => 'committed',
-    'Working on it' => 'checked in'
+    'Resolved' => 'committed'
   }
 
   def description
