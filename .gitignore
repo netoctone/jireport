@@ -1,3 +1,4 @@
 config/fetch.yml
 config/google_auth.yml
+config/last_fetch
 log/*
