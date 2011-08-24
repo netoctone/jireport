@@ -8,7 +8,7 @@ require 'logger'
 
 include JiReport
 
-FETCH_LIMIT = 30
+DEFAULT_FETCH_LIMIT = 30
 
 def fetch
   log = Logger.new(
@@ -33,9 +33,10 @@ def fetch
                              :password => conf['password'],
                              :url => conf['url'],
                              :proxy => conf['proxy']
+  fetch_limit = conf[:fetch_limit] || DEFAULT_FETCH_LIMIT
   conf['users'].each_key do |user|
     log.info "fetching issues for #{user}"
-    issues = fetcher.fetch_changed_issues user, FETCH_LIMIT
+    issues = fetcher.fetch_changed_issues user, fetch_limit
     log.info "tracking issues for #{user}"
     issues.each do |issue|
       Issue.track issue

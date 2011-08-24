@@ -2,7 +2,7 @@ login:
 password:
 url:
 proxy:
-timezone: -8
+fetch_limit: 30
 
 users:
   jira_login: 'User Name'
