@@ -17,6 +17,10 @@ stored one. Database is accessed via ActiveRecord (from Rails 3.0).
 Generates report based on stored data,
 for now, using Google Spreadsheet API.
 
+3. bin/report_cur_week
+
+Generates report for current week.
+
 == Getting Started
 
 1. Clone this repo to your machine:
@@ -37,7 +41,7 @@ for now, using Google Spreadsheet API.
 
     rake migrate
 
-6. Correct sha-bang in +bin/fetch+ and +bin/report+.
+6. Correct sha-bang in +bin/fetch+, +bin/report+ and +bin/report_cur_week+.
 
 7. ???
 
