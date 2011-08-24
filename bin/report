@@ -71,28 +71,32 @@ REPORT_METADATA = begin
   ]
 end
 
-TMP_PATH = File.expand_path('../../tmp', __FILE__)
+ROOT = File.expand_path('../..', __FILE__)
 
 def report name, from_date, to_date
+  tmp_path = "#{ROOT}/tmp"
+  log_path = "#{ROOT}/log"
+
+  [tmp_path, log_path].each do |path|
+    Dir.mkdir path unless File.exist? path
+  end
+
   log = Logger.new(
-    File.open(File.expand_path('../../log/report.log', __FILE__), 'a')
+    File.open("#{log_path}/report.log", 'a')
   )
   log.info "--- started ---"
 
   log.info "reading config/database.yml"
-  db_conf_path = File.expand_path('../../config/database.yml', __FILE__)
-  db_conf = YAML::load(File.open(db_conf_path))
+  db_conf = YAML::load File.open "#{ROOT}/config/database.yml"
 
   log.info "establishing connection with db"
   ActiveRecord::Base.establish_connection db_conf
 
   log.info "reading config/fetch.yml"
-  conf_path = File.expand_path('../../config/fetch.yml', __FILE__)
-  conf = YAML::load(File.open(conf_path))
+  conf = YAML::load File.open "#{ROOT}/config/fetch.yml"
 
   log.info "reading config/google_auth.yml"
-  google_path = File.expand_path('../../config/google_auth.yml', __FILE__)
-  google_conf = YAML::load(File.open(google_path))
+  google_conf = YAML::load File.open "#{ROOT}/config/google_auth.yml"
 
   log.info "gathering report data"
   data = []
@@ -103,8 +107,8 @@ def report name, from_date, to_date
   end
 
   log.info "generating ods data"
-  templ_path = File.expand_path('../../config/template.ods', __FILE__)
-  tmp_file = "#{TMP_PATH}/#{name}.ods"
+  templ_path = "#{ROOT}/config/template.ods"
+  tmp_file = "#{tmp_path}/#{name}.ods"
   OdsTemplateFormatter.generate templ_path, tmp_file, REPORT_METADATA, data
 
   log.info "sending report to google"

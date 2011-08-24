@@ -8,24 +8,26 @@ require 'logger'
 
 include JiReport
 
+ROOT = File.expand_path('../..', __FILE__)
 DEFAULT_FETCH_LIMIT = 30
 
 def fetch
+  log_path = "#{ROOT}/log"
+  Dir.mkdir log_path unless File.exists? log_path
+
   log = Logger.new(
-    File.open(File.expand_path('../../log/fetch.log', __FILE__), 'a')
+    File.open("#{log_path}/fetch.log", 'a')
   )
   log.info "--- started ---"
 
   log.info "reading config/database.yml"
-  db_conf_path = File.expand_path('../../config/database.yml', __FILE__)
-  db_conf = YAML::load(File.open(db_conf_path))
+  db_conf = YAML::load File.open "#{ROOT}/config/database.yml"
 
   log.info "establishing connection with db"
   ActiveRecord::Base.establish_connection db_conf
 
   log.info "reading config/fetch.yml"
-  conf_path = File.expand_path('../../config/fetch.yml', __FILE__)
-  conf = YAML::load(File.open(conf_path))
+  conf = YAML::load File.open "#{ROOT}/config/fetch.yml"
 
   new_last_fetch = Time.now
 
@@ -43,9 +45,8 @@ def fetch
     end
   end
 
-  last_fetch_path = File.expand_path('../../config/last_fetch', __FILE__)
   log.info "rewriting config/last_fetch"
-  File.open(last_fetch_path, 'w') do |file|
+  File.open("#{ROOT}/config/last_fetch", 'w') do |file|
     file << new_last_fetch
   end
 
