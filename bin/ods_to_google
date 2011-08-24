@@ -9,10 +9,10 @@ if len(sys.argv) != 4:
 client = gdata.docs.service.DocsService()
 client.ClientLogin(sys.argv[1], sys.argv[2])
 
-fl = os.getcwd() + "/tmp/" + sys.argv[3] + ".xls"
+fl = os.getcwd() + "/tmp/" + sys.argv[3] + ".ods"
 ms = gdata.data.MediaSource(
   file_path=fl,
-  content_type=gdata.docs.service.SUPPORTED_FILETYPES['XLS']
+  content_type=gdata.docs.service.SUPPORTED_FILETYPES['ODS']
 )
 
 client.Upload(ms, sys.argv[3])

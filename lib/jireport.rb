@@ -1,12 +1,18 @@
 require 'bundler/setup'
-require 'ruby_extensions'
 require 'active_record'
 require 'active_support/time'
+
+require 'jireport/ruby_extensions'
 require 'jireport/issue'
 
+require 'open-uri'
+require 'openssl'
+require 'simple-rss'
+require 'cgi'
+
 module JiReport
-  autoload :JiraFetch, 'jireport/jira_fetch'
-  autoload :ExcelFormatter, 'jireport/excel_formatter'
+  autoload :JiraRSSFetch, 'jireport/jira_rss_fetch'
+  autoload :OdsTemplateFormatter, 'jireport/ods_template_formatter'
 
   class Error < StandardError; end
   class NotAvailableError < Error; end

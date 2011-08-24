@@ -61,33 +61,6 @@ REPORT_METADATA = begin
 
   [
     {
-      :title => 'Management',
-      :no_issue => true,
-      :columns => [
-        {
-          :source => [:user, :fullname],
-          :header => 'Name',
-          :width => 20
-        },
-        {
-          :header => 'Vac/Ill'
-        },
-        {
-          :header => 'On Track'
-        },
-        {
-          :header => 'Delay Details'
-        },
-        {
-          :header => 'Recovery Plan'
-        },
-        {
-          :header => 'Comments',
-          :width => 12
-        }
-      ]
-    },
-    {
       :title => 'Short report',
       :columns => short_report_columns
     },
@@ -129,15 +102,15 @@ def report name, from_date, to_date
     data << [OpenStruct.new({ :fullname => fullname }), issues]
   end
 
-  log.info "generating xls data"
-  tmp_file = "#{TMP_PATH}/#{name}.xls"
-  ExcelFormatter.generate tmp_file, REPORT_METADATA, data
+  log.info "generating ods data"
+  templ_path = File.expand_path('../../config/template.ods', __FILE__)
+  tmp_file = "#{TMP_PATH}/#{name}.ods"
+  OdsTemplateFormatter.generate templ_path, tmp_file, REPORT_METADATA, data
 
   log.info "sending report to google"
   g_cnf = google_conf
-  %x[bin/xls_to_google '#{g_cnf['login']}' '#{g_cnf['password']}' '#{name}']
-  raise StandardError, "bin/xls_to_google returned #{$?}" unless $? == 0
-
+  %x[bin/ods_to_google '#{g_cnf['login']}' '#{g_cnf['password']}' '#{name}']
+  raise StandardError, "bin/ods_to_google returned #{$?}" unless $? == 0
   log.info "--- finished successfully ---"
 rescue StandardError => e
   msg = e.to_log
@@ -153,4 +126,9 @@ if ARGV.size != 3
   exit 1
 end
 
-report ARGV[0], Time.parse(ARGV[1], '%D'), Time.parse(ARGV[2], '%D') + 1.day
+TIME_FMT = '%Y-%m-%d'
+
+from = Time.parse(ARGV[1], TIME_FMT)
+to = Time.parse(ARGV[2], TIME_FMT) + 1.day
+
+report ARGV[0], from, to

@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/netoctone/rubiod
+  revision: 61c98887d96a941f19168a8e016f95a961806283
+  specs:
+    rubiod (0.1.0)
+      libxml-ruby (~> 2.0)
+      rubyzip (~> 0.9.4)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -14,10 +22,9 @@ GEM
     arel (2.0.10)
     builder (2.1.2)
     i18n (0.5.0)
-    ruby-ole (1.2.11.1)
+    libxml-ruby (2.2.1)
+    rubyzip (0.9.4)
     simple-rss (1.2.3)
-    spreadsheet (0.6.5.7)
-      ruby-ole (>= 1.0)
     tzinfo (0.3.29)
 
 PLATFORMS
@@ -26,5 +33,5 @@ PLATFORMS
 DEPENDENCIES
   activerecord (~> 3.0.7)
   activesupport (~> 3.0.7)
+  rubiod!
   simple-rss (~> 1.2.3)
-  spreadsheet (~> 0.6.5.7)
