@@ -4,22 +4,22 @@ jireport is console app in ruby 1.9
 
 It is designed to create custom reports of issue resolve activity in JIRA.
 
-Two scripts available:
+Three scripts available:
 
 1. bin/fetch
 
-Fetches issues state and tracks it to database,
-allowing to add additional data based on comparison with already
-stored one. Database is accessed via ActiveRecord (from Rails 3.0).
+  Fetches issues state and tracks it to database,
+  allowing to add additional data based on comparison with already
+  stored one. Database is accessed via ActiveRecord (from Rails 3.0).
 
 2. bin/report
 
-Generates report based on stored data,
-for now, using Google Spreadsheet API.
+  Generates report based on stored data,
+  for now, using Google Spreadsheet API.
 
 3. bin/report_cur_week
 
-Generates report for current week.
+  Generates report for current week.
 
 == Getting Started
 
