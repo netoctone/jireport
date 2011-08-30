@@ -99,10 +99,15 @@ def report name, from_date, to_date
   google_conf = YAML::load File.open "#{ROOT}/config/google_auth.yml"
 
   log.info "gathering report data"
+  now = Time.now
   data = []
   conf['users'].each do |user, fullname|
     issues = Issue.where(:assignee => user,
                          :updated_at => from_date..to_date)
+    issues.each do |i|
+      i.summary = CGI.escape_html i.summary
+      i.ended_at ||= now
+    end
     data << [OpenStruct.new({ :fullname => fullname }), issues]
   end
 

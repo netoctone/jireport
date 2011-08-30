@@ -51,7 +51,7 @@ module JiReport
           next
         end
 
-        feed[:summary] = CGI.unescapeHTML CGI.unescapeHTML summary[1...-1]
+        feed[:summary] = CGI.unescape_html CGI.unescape_html summary[1...-1]
         feed[:updated_at] = e.updated
         feed
       }.compact
